@@ -1,3 +1,5 @@
-module amazon_scraper
+module github.com/pesarkhobeee/amazon_scraper
 
 go 1.23.3
+
+require github.com/gorilla/mux v1.8.1

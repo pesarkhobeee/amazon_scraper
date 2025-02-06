@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/pesarkhobeee/amazon_scraper/pkg/scraper"
+	"github.com/pesarkhobeee/amazon_scraper/internal/scraper"
 )
 
 func TestGetAmazonMovieInformation(t *testing.T) {
@@ -14,7 +14,10 @@ func TestGetAmazonMovieInformation(t *testing.T) {
 	defer cancel()
 
 	amazon_id := "B00K19SD8Q"
-	htmlContent := scraper.ScrapeAmazonMovieInformation(ctx, amazon_id)
+	htmlContent, err := scraper.ScrapeAmazonMovieInformation(ctx, amazon_id)
+	if err != nil {
+		t.Error(err)
+	}
 
 	if htmlContent == "" {
 		t.Error("Could not get the content of the page")

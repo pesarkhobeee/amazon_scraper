@@ -1,7 +1,7 @@
 package server
 
 import (
-	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -9,7 +9,7 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/pesarkhobeee/amazon_scraper/pkg/scraper"
+	"github.com/pesarkhobeee/amazon_scraper/internal/scraper"
 )
 
 // RunServer runs the server
@@ -26,24 +26,33 @@ func RunServer() {
 
 	router.HandleFunc("/movie/amazon/{amazon_id}", getAmazonMovieInformation).Methods("GET")
 
-	log.Fatal(srv.ListenAndServe())
+	log.Println(srv.ListenAndServe())
 }
 
 func getAmazonMovieInformation(w http.ResponseWriter, r *http.Request) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
+	ctx := r.Context()
 
 	amazon_id := mux.Vars(r)["amazon_id"]
 	fmt.Println(amazon_id)
-	htmlContent := scraper.ScrapeAmazonMovieInformation(ctx, amazon_id)
+	htmlContent, err := scraper.ScrapeAmazonMovieInformation(ctx, amazon_id)
+	if err != nil {
+		http.Error(w, "Could not scrape the page: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	if htmlContent == "" {
-		log.Fatal("Could not get the content of the page")
+		http.Error(w, "Page not found", http.StatusNotFound)
+		return
 	}
 
 	text, err := scraper.ExtractText(htmlContent)
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, "Could not extract the text from the page", http.StatusInternalServerError)
+		return
 	}
 	fmt.Println(text)
+
+	enc := json.NewEncoder(w)
+	enc.SetIndent("", "  ")
+	enc.Encode(text)
 }

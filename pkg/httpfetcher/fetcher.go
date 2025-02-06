@@ -1,10 +1,8 @@
-package scraper
+package httpfetcher
 
 import (
 	"context"
-	"fmt"
 	"io"
-	"log"
 	"math/rand"
 	"net/http"
 	"time"
@@ -24,29 +22,16 @@ func getRandomUserAgent() string {
 	return userAgents[rand.Intn(len(userAgents))]
 }
 
-func ScrapeAmazonMovieInformation(ctx context.Context, amazonID string) string {
-	url := fmt.Sprintf("https://www.amazon.de/gp/product/%s", amazonID)
-
-	client := &http.Client{}
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+func NewRequestWIthUserAgent(ctx context.Context, method string, url string, body io.Reader) (*http.Request, error) {
+	req, err := http.NewRequestWithContext(ctx, method, url, body)
 	if err != nil {
-		fmt.Println("Error creating request:", err)
-		return ""
+		return nil, err
 	}
 
 	// Set randomized User-Agent
 	req.Header.Set("User-Agent", getRandomUserAgent())
+	req.Header.Set("Accept", "text/html, application/xhtml+xml, application/xml;q=0.9, image/webp")
+	req.Header.Set("Accept-Language", "en-US,en;q=0.5")
 
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Println("Error making request:", err)
-		return ""
-	}
-	defer resp.Body.Close()
-
-	content, err := io.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return string(content)
+	return req, nil
 }

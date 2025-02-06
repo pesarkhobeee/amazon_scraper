@@ -2,7 +2,6 @@ package scraper
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -44,7 +43,6 @@ func ExtractText(htmlContent string) (*MovieInformation, error) {
 	if strings.Contains(htmlContent, "To discuss automated access to Amazon data please contact") {
 		return nil, errors.New("blocked by Amazon")
 	}
-	fmt.Print(htmlContent)
 
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(htmlContent))
 	if err != nil {
@@ -67,7 +65,9 @@ func ExtractText(htmlContent string) (*MovieInformation, error) {
 
 	doc.Find("div[data-testid='packshot'] > a").Each(func(i int, s *goquery.Selection) {
 		id := s.AttrOr("href", "")
-		id = strings.Split(id, "/")[8]
+		if substr := strings.Split(id, "/"); len(substr) >= 5 {
+			id = substr[4]
+		}
 		movieInformation.SimilarIds = append(movieInformation.SimilarIds, id)
 	})
 

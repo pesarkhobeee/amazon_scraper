@@ -1,6 +1,8 @@
 package server
 
 import (
+	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -28,7 +30,20 @@ func RunServer() {
 }
 
 func getAmazonMovieInformation(w http.ResponseWriter, r *http.Request) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
 	amazon_id := mux.Vars(r)["amazon_id"]
-	content := scraper.ScrapeAmazonMovieInformation(amazon_id)
-	w.Write([]byte(content))
+	fmt.Println(amazon_id)
+	htmlContent := scraper.ScrapeAmazonMovieInformation(ctx, amazon_id)
+
+	if htmlContent == "" {
+		log.Fatal("Could not get the content of the page")
+	}
+
+	text, err := scraper.ExtractText(htmlContent)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(text)
 }

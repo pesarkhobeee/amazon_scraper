@@ -9,7 +9,8 @@ import (
 	"net/url"
 
 	"github.com/gorilla/mux"
-	"github.com/pesarkhobeee/amazon_scraper/internal/service/scraper"
+	"github.com/pesarkhobeee/amazon_scraper/internal/model"
+	"github.com/pesarkhobeee/amazon_scraper/internal/scraper"
 	"github.com/pesarkhobeee/amazon_scraper/pkg/httpfetcher"
 )
 
@@ -50,7 +51,7 @@ func (h *MovieScraper) GetAmazonMovieInformation(w http.ResponseWriter, r *http.
 	enc.Encode(info)
 }
 
-func (h *MovieScraper) getAmazonMovieInformation(ctx context.Context, amazonID string) (*scraper.MovieInformation, error) {
+func (h *MovieScraper) getAmazonMovieInformation(ctx context.Context, amazonID string) (*model.MovieInformation, error) {
 	reqURL := h.baseAddress.JoinPath("gp", "product", amazonID).String()
 	req, err := httpfetcher.NewRequestWIthUserAgent(ctx, http.MethodGet, reqURL, nil)
 	if err != nil {

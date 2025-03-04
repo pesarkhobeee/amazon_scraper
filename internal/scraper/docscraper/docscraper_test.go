@@ -7,8 +7,8 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 
-	"github.com/pesarkhobeee/amazon_scraper/internal/service/scraper"
-	"github.com/pesarkhobeee/amazon_scraper/internal/service/scraper/docscraper"
+	"github.com/pesarkhobeee/amazon_scraper/internal/model"
+	"github.com/pesarkhobeee/amazon_scraper/internal/scraper/docscraper"
 )
 
 func openFile(filename string) string {
@@ -32,7 +32,7 @@ func TestGetAmazonMovieInformation(t *testing.T) {
 		t.Error(err)
 	}
 
-	want := &scraper.MovieInformation{
+	want := &model.MovieInformation{
 		Title:       "Um Jeden Preis [dt./OV]",
 		ReleaseYear: 2012,
 		Actors:      []string{"Dennis Quaid", "Zac Efron", "Kim Dickens", "Heather Graham"},

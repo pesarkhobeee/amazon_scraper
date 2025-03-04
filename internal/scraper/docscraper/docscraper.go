@@ -9,14 +9,15 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 
-	"github.com/pesarkhobeee/amazon_scraper/internal/service/scraper"
+	"github.com/pesarkhobeee/amazon_scraper/internal/model"
+	"github.com/pesarkhobeee/amazon_scraper/internal/scraper"
 )
 
 var _ scraper.MovieParser = &Scraper{}
 
 type Scraper struct{}
 
-func (s Scraper) Parse(ctx context.Context, content string) (*scraper.MovieInformation, error) {
+func (s Scraper) Parse(ctx context.Context, content string) (*model.MovieInformation, error) {
 	if strings.Contains(content, "To discuss automated access to Amazon data please contact") {
 		return nil, errors.New("blocked by Amazon")
 	}
@@ -26,7 +27,7 @@ func (s Scraper) Parse(ctx context.Context, content string) (*scraper.MovieInfor
 		return nil, err
 	}
 
-	var movieInformation scraper.MovieInformation
+	var movieInformation model.MovieInformation
 	movieInformation.Title = doc.Find("h1[data-automation-id='title']").Text()
 
 	movieInformation.ReleaseYear, err = strconv.Atoi(doc.Find("span[data-automation-id='release-year-badge']").Text())

@@ -7,8 +7,8 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 
-	"github.com/pesarkhobeee/amazon_scraper/internal/scraper"
-	"github.com/pesarkhobeee/amazon_scraper/internal/scraper/docscraper"
+	"github.com/pesarkhobeee/amazon_scraper/internal/service/scraper"
+	"github.com/pesarkhobeee/amazon_scraper/internal/service/scraper/docscraper"
 )
 
 func openFile(filename string) string {

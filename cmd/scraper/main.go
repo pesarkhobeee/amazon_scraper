@@ -7,8 +7,8 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/pesarkhobeee/amazon_scraper/internal/handler"
-	"github.com/pesarkhobeee/amazon_scraper/internal/scraper"
 	"github.com/pesarkhobeee/amazon_scraper/internal/server"
+	"github.com/pesarkhobeee/amazon_scraper/internal/service/scraper"
 )
 
 /*

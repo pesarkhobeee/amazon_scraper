@@ -8,7 +8,8 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/pesarkhobeee/amazon_scraper/internal/scraper"
+
+	"github.com/pesarkhobeee/amazon_scraper/internal/service/scraper"
 )
 
 var _ scraper.MovieParser = &Scraper{}

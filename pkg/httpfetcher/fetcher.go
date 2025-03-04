@@ -5,7 +5,6 @@ import (
 	"io"
 	"math/rand"
 	"net/http"
-	"time"
 )
 
 // List of real User-Agents
@@ -18,7 +17,6 @@ var userAgents = []string{
 
 // Function to get a random User-Agent
 func getRandomUserAgent() string {
-	rand.Seed(time.Now().UnixNano()) // Ensure randomness
 	return userAgents[rand.Intn(len(userAgents))]
 }
 

@@ -2,34 +2,38 @@ package scraper
 
 import (
 	"context"
-	"fmt"
-	"io"
-	"net/http"
-
-	"github.com/pesarkhobeee/amazon_scraper/pkg/httpfetcher"
 )
 
-func ScrapeAmazonMovieInformation(ctx context.Context, amazonID string) (string, error) {
-	url := fmt.Sprintf("https://www.amazon.de/gp/product/%s", amazonID)
+/*
+*
+* {
 
-	client := &http.Client{}
-	req, err := httpfetcher.NewRequestWIthUserAgent(ctx, "GET", url, nil)
+"title": "Um Jeden Preis",
 
-	if err != nil {
-		fmt.Println("Error creating request:", err)
-		return "", err
-	}
+"release_year": 2013,
 
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Println("Error making request:", err)
-		return "", err
-	}
-	defer resp.Body.Close()
+"actors": ["Dennis Quaid","Zac Efron"],
 
-	content, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-	return string(content), nil
+"poster": "http://ecx.images-
+amazon.com/images/I/51UZ8st2OdL._SX200_QL80_.jpg",
+
+"similar_ids":
+["B00SWDQPOC","B00RBPBO1G","B00S2EMECI","B00M5GH53M","B00IH8BA3S",
+"B00M5JP1DA"]
+
+}
+
+*
+*/
+
+type MovieInformation struct {
+	Title       string   `json:"title"`
+	ReleaseYear int      `json:"release_year"`
+	Actors      []string `json:"actors"`
+	Poster      string   `json:"poster"`
+	SimilarIds  []string `json:"similar_ids"`
+}
+
+type MovieParser interface {
+	Parse(ctx context.Context, content string) (*MovieInformation, error)
 }

@@ -9,6 +9,7 @@ import (
 
 	"github.com/pesarkhobeee/amazon_scraper/internal/handler"
 	"github.com/pesarkhobeee/amazon_scraper/internal/scraper"
+	"github.com/pesarkhobeee/amazon_scraper/internal/scraper/docscraper"
 	"github.com/pesarkhobeee/amazon_scraper/pkg/server"
 )
 
@@ -48,7 +49,11 @@ func main() {
 	log.Printf("Starting the server on port %d...", port)
 
 	// 1. Run the server
-	router, err := newRouter(nil, http.DefaultClient)
+	var (
+		scraper    = &docscraper.Scraper{}
+		httpClient = http.DefaultClient
+	)
+	router, err := newRouter(scraper, httpClient)
 	if err != nil {
 		panic(err)
 	}

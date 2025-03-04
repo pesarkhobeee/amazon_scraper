@@ -1,5 +1,5 @@
-// Package docscraper scrapes the page using doc attributes
-package docscraper
+// Package docparser scrapes the page using doc attributes
+package docparser
 
 import (
 	"context"
@@ -10,14 +10,14 @@ import (
 	"github.com/PuerkitoBio/goquery"
 
 	"github.com/pesarkhobeee/amazon_scraper/internal/model"
-	"github.com/pesarkhobeee/amazon_scraper/internal/scraper"
+	"github.com/pesarkhobeee/amazon_scraper/internal/parser"
 )
 
-var _ scraper.MovieParser = &Scraper{}
+var _ parser.MovieParser = &Parser{}
 
-type Scraper struct{}
+type Parser struct{}
 
-func (s Scraper) Parse(ctx context.Context, content string) (*model.MovieInformation, error) {
+func (s Parser) Parse(ctx context.Context, content string) (*model.MovieInformation, error) {
 	if strings.Contains(content, "To discuss automated access to Amazon data please contact") {
 		return nil, errors.New("blocked by Amazon")
 	}

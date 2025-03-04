@@ -1,4 +1,4 @@
-package docscraper_test
+package docparser_test
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 
 	"github.com/pesarkhobeee/amazon_scraper/internal/model"
-	"github.com/pesarkhobeee/amazon_scraper/internal/scraper/docscraper"
+	"github.com/pesarkhobeee/amazon_scraper/internal/parser/docparser"
 )
 
 func openFile(filename string) string {
@@ -26,7 +26,7 @@ func TestGetAmazonMovieInformation(t *testing.T) {
 		t.Error("Could not get the content of the page")
 	}
 
-	scp := &docscraper.Scraper{}
+	scp := &docparser.Parser{}
 	got, err := scp.Parse(context.TODO(), htmlContent)
 	if err != nil {
 		t.Error(err)

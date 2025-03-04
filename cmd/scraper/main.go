@@ -8,8 +8,8 @@ import (
 	"github.com/gorilla/mux"
 
 	"github.com/pesarkhobeee/amazon_scraper/internal/handler"
-	"github.com/pesarkhobeee/amazon_scraper/internal/scraper"
-	"github.com/pesarkhobeee/amazon_scraper/internal/scraper/docscraper"
+	"github.com/pesarkhobeee/amazon_scraper/internal/parser/docparser"
+	"github.com/pesarkhobeee/amazon_scraper/internal/service/scraper"
 	"github.com/pesarkhobeee/amazon_scraper/pkg/server"
 )
 
@@ -49,11 +49,7 @@ func main() {
 	log.Printf("Starting the server on port %d...", port)
 
 	// 1. Run the server
-	var (
-		scraper    = &docscraper.Scraper{}
-		httpClient = http.DefaultClient
-	)
-	router, err := newRouter(scraper, httpClient)
+	router, err := newRouter()
 	if err != nil {
 		panic(err)
 	}
@@ -61,12 +57,17 @@ func main() {
 	log.Println(srv.ListenAndServe())
 }
 
-func newRouter(scraper scraper.MovieParser, httpClient *http.Client) (http.Handler, error) {
-	handler, err := handler.NewMovieScraper(baseAddress, scraper, httpClient)
+func newRouter() (http.Handler, error) {
+	srv, err := scraper.NewService(
+		baseAddress,
+		&docparser.Parser{},
+		http.DefaultClient,
+	)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create new handler: %w", err)
+		return nil, fmt.Errorf("failed to create new scraper service: %w", err)
 	}
 
+	handler := handler.NewMovieScraper(srv)
 	router := mux.NewRouter()
 	router.
 		HandleFunc("/movie/amazon/{amazon_id}", handler.GetAmazonMovieInformation).

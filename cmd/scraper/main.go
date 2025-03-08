@@ -1,9 +1,16 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"net/http"
 
-	"github.com/pesarkhobeee/amazon_scraper/internal/server"
+	"github.com/gorilla/mux"
+
+	"github.com/pesarkhobeee/amazon_scraper/internal/handler"
+	"github.com/pesarkhobeee/amazon_scraper/internal/parser/docparser"
+	"github.com/pesarkhobeee/amazon_scraper/internal/service/scraper"
+	"github.com/pesarkhobeee/amazon_scraper/pkg/server"
 )
 
 /*
@@ -39,8 +46,36 @@ func main() {
 
 	// 2. Set the log level
 
-	log.Println("Starting the server...")
+	log.Printf("Starting the server on port %d...", port)
 
 	// 1. Run the server
-	server.RunServer()
+	router, err := newRouter()
+	if err != nil {
+		panic(err)
+	}
+	srv := server.NewServer(port, router)
+	log.Println(srv.ListenAndServe())
 }
+
+func newRouter() (http.Handler, error) {
+	srv, err := scraper.NewService(
+		baseAddress,
+		&docparser.Parser{},
+		http.DefaultClient,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create new scraper service: %w", err)
+	}
+
+	handler := handler.NewMovieScraper(srv)
+	router := mux.NewRouter()
+	router.
+		HandleFunc("/movie/amazon/{amazon_id}", handler.GetAmazonMovieInformation).
+		Methods(http.MethodGet)
+	return router, nil
+}
+
+const (
+	port        = 8080
+	baseAddress = "https://www.amazon.de"
+)

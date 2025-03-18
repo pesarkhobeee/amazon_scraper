@@ -1,0 +1,9 @@
+with-expecter: True
+dir: "{{.InterfaceDir}}/mocks"
+mockname: "Mock{{.InterfaceName}}"
+filename: "mock_{{.InterfaceName}}.go"
+packages:
+    github.com/pesarkhobeee/amazon_scraper/internal/handler:
+        config:
+          all: True
+          outpkg: "handlermocks"

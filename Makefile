@@ -9,3 +9,8 @@ build-image:
 .PHONY: run
 run: build
 	./bin/scraper
+
+.PHONY: test
+test:
+	go clean -testcache
+	go test ./... -v -race -coverprofile=coverage.out -timeout=30m
